@@ -1,7 +1,7 @@
 
 # JBrowse Setup and Synteny Analysis Guide
 
-This guide provides step-by-step instructions for setting up JBrowse for synteny analysis and annotation across **MacOS**, **AWS**, and **Windows**. It includes commands, explanations, and troubleshooting tips.
+This guide provides step-by-step instructions for setting up JBrowse on cowpox, monkeypox, variola, and vaccinia in the Poxviridae viral family for synteny analysis and annotation across **MacOS**, **AWS**, and **Windows**. It includes commands, explanations, and troubleshooting tips.
 
 ---
 
