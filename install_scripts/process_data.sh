@@ -2,17 +2,20 @@
 brew update                        # Update the package lists
 brew install minimap2              # Install Minimap2 for pairwise alignment
 
+minimap2 variola_b14r_ncbi.fa monkeypox.fna > B14R_vs_monkeypox.paf
 minimap2 monkeypox.fna variola.fna > variola_vs_monkeypox.paf
 minimap2 cowpox_genome_ncbi.fa variola.fna > variola_vs_cowpox.paf
 minimap2 vaccinia_genome_ncbi.fa variola.fna > variola_vs_vaccinia.paf
 # Generate a PAF file showing alignments between Variola and other 3 viruses genomes
 
+sudo jbrowse add-assembly variola_b14r_ncbi.fa --load copy -n B14R --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly monkeypox.fna --load copy -n monkeypox --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly variola.fna --load copy -n variola --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly cowpox_genome_ncbi.fa --load copy -n cowpox --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly vaccinia_genome_ncbi.fa --load copy -n vaccinia --out /var/www/html/jbrowse2
 # Add all of the viruses assembly to JBrowse with a specified name
 
+sudo jbrowse add-track B14R_vs_monkeypox.paf --assemblyNames B14R,monkeypox --load copy --out /var/www/html/jbrowse2
 sudo jbrowse add-track variola_vs_monkeypox.paf --assemblyNames variola,monkeypox --load copy --out /var/www/html/jbrowse2
 sudo jbrowse add-track variola_vs_cowpox.paf --assemblyNames variola,cowpox --load copy --out /var/www/html/jbrowse2
 sudo jbrowse add-track variola_vs_vaccinia.paf --assemblyNames variola,vaccinia --load copy --out /var/www/html/jbrowse2
