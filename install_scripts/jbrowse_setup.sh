@@ -1,71 +1,101 @@
-# -------------------- Synteny Analysis --------------------
-brew update                        # Update the package lists
-brew install minimap2              # Install Minimap2 for pairwise alignment
+# -------------------- Setup if using a Linux or Windows Device --------------------
 
-minimap2 monkeypox.fna variola.fna > variola_vs_monkeypox.paf
-minimap2 cowpox_genome_ncbi.fa variola.fna > variola_vs_cowpox.paf
-minimap2 vaccinia_genome_ncbi.fa variola.fna > variola_vs_vaccinia.paf
-# Generate a PAF file showing alignments between Variola and other 3 viruses genomes
 
-sudo jbrowse add-assembly monkeypox.fna --load copy -n monkeypox --out /var/www/html/jbrowse2
-sudo jbrowse add-assembly variola.fna --load copy -n variola --out /var/www/html/jbrowse2
-sudo jbrowse add-assembly cowpox_genome_ncbi.fa --load copy -n cowpox --out /var/www/html/jbrowse2
-sudo jbrowse add-assembly vaccinia_genome_ncbi.fa --load copy -n vaccinia --out /var/www/html/jbrowse2
-# Add all of the viruses assembly to JBrowse with a specified name
+sudo su -                                  # Switch to the root user
+passwd ubuntu                              # Set a new password for the 'ubuntu' user
 
-sudo jbrowse add-track variola_vs_monkeypox.paf --assemblyNames variola,monkeypox --load copy --out /var/www/html/jbrowse2
-sudo jbrowse add-track variola_vs_cowpox.paf --assemblyNames variola,cowpox --load copy --out /var/www/html/jbrowse2
-sudo jbrowse add-track variola_vs_vaccinia.paf --assemblyNames variola,vaccinia --load copy --out /var/www/html/jbrowse2
-# Add the Variola vs other 3 viruses synteny track to JBrowse
+ubuntu                                     # (User input) Enter the new password (e.g., "ubuntu")
+ubuntu                                     # (User input) Confirm the password
 
-# -------------------- Add Annotation --------------------
+exit                                       # Exit the root shell, returning to the 'ubuntu' user
 
-# Variola
-export GFF_ROOT=https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/859/885/GCF_000859885.1_ViralProj15197/
-wget $GFF_ROOT/GCF_000859885.1_ViralProj15197_genomic.gff.gz
-gunzip GCF_000859885.1_ViralProj15197_genomic.gff.gz
-sudo jbrowse sort-gff GCF_000859885.1_ViralProj15197_genomic.gff > variola.gff
-# Download and decompress the Variola GFF file, sort the  GFF file using JBrowse
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Run Homebrew's installation script from GitHub
 
-bgzip variola.gff
-tabix variola.gff.gz
-# Compress the GFF file into a .gz format and index it with tabix
+echo >> /home/ubuntu/.bashrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/ubuntu/.bashrc
+# Append Homebrew environment initialization commands to the .bashrc file
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Apply the updated environment variables from Homebrew immediately
 
-sudo jbrowse add-track variola.gff.gz --assemblyNames variola --out $APACHE_ROOT/jbrowse2 --load copy
-# Add the Variola annotation track to JBrowse
+# installs fnm (Fast Node Manager)
+curl -fsSL https://fnm.vercel.app/install | bash
+# activate fnm
+source ~/.bashrc
+# download and install Node.js
+fnm use --install-if-missing 20
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.18.0`
+# verifies the right npm version is in the environment
+npm -v # should print `10.8.2
 
-# Monkeypox
-export GFF_ROOT=https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/023/516/015/GCA_023516015.3_ASM2351601v1/
-wget $GFF_ROOT/GCA_023516015.3_ASM2351601v1_genomic.gff.gz
-gunzip GCA_023516015.3_ASM2351601v1_genomic.gff.gz
-sudo jbrowse sort-gff GCA_023516015.3_ASM2351601v1_genomic.gff > monkeypox.gff
-# Download and decompress the Monkeypox GFF file, sort the  GFF file using JBrowse
+# -------------------- Setup if using a Mac -----------------------------------------
 
-bgzip monkeypox.gff
-tabix monkeypox.gff.gz
-# Compress the GFF file into a .gz format and index it with tabix
+xcode-select --install
+#install command line tools if not already
 
-sudo jbrowse add-track monkeypox.gff.gz --assemblyNames monkeypox --out $APACHE_ROOT/jbrowse2 --load copy
-# Add the Monkeypox annotation track to JBrowse
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Cowpox
-curl -o cowpox_genome.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/839/185/GCF_000839185.1_ViralProj14174/GCF_000839185.1_ViralProj14174_genomic.gff.gz"
-gunzip cowpox_genome.gff.gz
-sudo jbrowse sort-gff cowpox_genome.gff > cowpox_genome_sorted.gff
-bgzip cowpox_genome_sorted.gff
-tabix cowpox_genome_sorted.gff.gz
-sudo jbrowse add-track cowpox_genome_sorted.gff.gz --assemblyNames cowpox --out $APACHE_ROOT/jbrowse2 --load copy
-# Same as above with Cowpox where we use curl here
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
-# Vaccinia
-curl -o vaccinia_genome.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/860/085/GCF_000860085.1_ViralProj15241/GCF_000860085.1_ViralProj15241_genomic.gff.gz"
-gunzip vaccinia_genome.gff.gz
-sudo jbrowse sort-gff vaccinia_genome.gff > vaccinia_genome_sorted.gff
-bgzip vaccinia_genome_sorted.gff
-tabix vaccinia_genome_sorted.gff.gz
-sudo jbrowse add-track vaccinia_genome_sorted.gff.gz --assemblyNames vaccinia --out $APACHE_ROOT/jbrowse2 --load copy
-# Same as above with Vaccinia where we use curl here
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
-# --------------------
-sudo jbrowse text-index --out $APACHE_ROOT/jbrowse2
-# Build a text index for all assemblies and tracks in JBrowse for fast searching
+brew --version
+brew update
+
+node -v
+
+
+# NOTE:
+# Homebrew is not a Node.js package manager.
+# Please ensure it is already installed on your system.
+# Follow official instructions at https://brew.sh/
+# Homebrew only supports installing major Node.js versions and might not support the latest Node.js version from the 20 release line.
+# download and install Node.js
+brew install node@20
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.18.0`
+# verifies the right npm version is in the environment
+npm -v # should print `10.8.2`
+
+# -------------------- Start for Environment Setup -----------------------------------
+
+# For all sudo apt commands, if using a make, use brew install
+
+brew install unzip                      # Install 'unzip' utility for extracting archives 
+
+curl -fsSL https://fnm.vercel.app/install | bash
+# Download and run the Fast Node Manager (fnm) installation script
+
+source ~/.bashrc                            # Reload the shell configuration to include fnm
+fnm use --install-if-missing 20             # Use or install Node.js v20 if it's not present
+
+sudo npm install -g @jbrowse/cli                 # Install the JBrowse CLI tool globally
+
+# -------------------- Linux Only ----------------------------------------------------
+sudo apt install wget apache2               # Install 'wget' for downloads and 'apache2' for a web server (FOR LINUX / WINDOWS ONLY)
+# ------------------------------------------------------------------------------------
+
+brew install samtools htslib                # Use Homebrew to install 'samtools' and 'htslib' for genomic data
+
+# -------------------- Linux Only ----------------------------------------------------
+sudo service apache2 start                  # Start the Apache web server (FOR LINUX / WINDOWS ONLY)
+# ------------------------------------------------------------------------------------
+
+# -------------------- Mac Only ------------------------------------------------------
+sudo brew services start httpd              # Start the Apache web server (FOR MAC ONLY)
+# ------------------------------------------------------------------------------------
+
+export APACHE_ROOT='/var/www/html'          # Set an environment variable to point to Apache's document root
+
+mkdir tmp                                   # Create a temporary directory
+cd tmp                                      # Change into the temporary directory
+
+jbrowse create output_folder                
+# Create a JBrowse project structure called 'output_folder'
+sudo mv output_folder $APACHE_ROOT/jbrowse2 
+# Move the created JBrowse folder into the Apache document root
+sudo chown -R $(whoami) $APACHE_ROOT/jbrowse2
+# Change ownership of the JBrowse directory so the current user can modify it
