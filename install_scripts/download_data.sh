@@ -27,3 +27,7 @@ samtools faidx cowpox_genome_ncbi.fa
 curl -o vaccinia_genome_ncbi.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_006998.1&rettype=fasta&retmode=text"
 samtools faidx vaccinia_genome_ncbi.fa
 # Same as above, but we use curl instead of wget here
+
+# -------------------- B14R assembly ---------------------
+curl -o B14R_gene.fna "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_001611.1&seq_start=163090&seq_stop=163539&strand=1&rettype=fasta&retmode=text"
+samtools faidx B14R_gene.fna
