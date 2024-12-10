@@ -11,7 +11,8 @@ sudo jbrowse add-assembly monkeypox.fna --load copy -n monkeypox --out /var/www/
 sudo jbrowse add-assembly variola.fna --load copy -n variola --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly cowpox_genome_ncbi.fa --load copy -n cowpox --out /var/www/html/jbrowse2
 sudo jbrowse add-assembly vaccinia_genome_ncbi.fa --load copy -n vaccinia --out /var/www/html/jbrowse2
-# Add all of the viruses assembly to JBrowse with a specified name
+sudo jbrowse add-assembly B14R_gene.fna --load copy -n B14R --out /var/www/html/jbrowse2
+# Add all of the viruses and B14R gene assemblies to JBrowse with a specified name
 
 sudo jbrowse add-track variola_vs_monkeypox.paf --assemblyNames variola,monkeypox --load copy --out /var/www/html/jbrowse2
 sudo jbrowse add-track variola_vs_cowpox.paf --assemblyNames variola,cowpox --load copy --out /var/www/html/jbrowse2
