@@ -148,6 +148,11 @@ samtools faidx cowpox_genome_ncbi.fa
 curl -o vaccinia_genome_ncbi.fa "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_006998.1&rettype=fasta&retmode=text"
 samtools faidx vaccinia_genome_ncbi.fa
 ```
+### B14R Gene
+```bash
+curl -o B14R_gene.fna "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_001611.1&seq_start=163090&seq_stop=163539&strand=1&rettype=fasta&retmode=text"
+samtools faidx B14R_gene.fna
+```
 
 ---
 
@@ -160,13 +165,32 @@ minimap2 cowpox_genome_ncbi.fa variola.fna > variola_vs_cowpox.paf
 minimap2 vaccinia_genome_ncbi.fa variola.fna > variola_vs_vaccinia.paf
 ```
 
-### Add Assemblies to JBrowse
+### Add Variola Assembly
 ```bash
-jbrowse add-assembly monkeypox.fna --load copy -n monkeypox --out $APACHE_ROOT/jbrowse2
-jbrowse add-assembly variola.fna --load copy -n variola --out $APACHE_ROOT/jbrowse2
-jbrowse add-assembly cowpox_genome_ncbi.fa --load copy -n cowpox --out $APACHE_ROOT/jbrowse2
-jbrowse add-assembly vaccinia_genome_ncbi.fa --load copy -n vaccinia --out $APACHE_ROOT/jbrowse2
+sudo jbrowse add-assembly variola.fna --load copy -n variola --out /var/www/html/jbrowse2
 ```
+
+### Add Monkeypox Assembly
+```bash
+sudo jbrowse add-assembly monkeypox.fna --load copy -n monkeypox --out /var/www/html/jbrowse2
+```
+
+### Add Cowpox Assembly
+```bash
+sudo jbrowse add-assembly cowpox_genome_ncbi.fa --load copy -n cowpox --out /var/www/html/jbrowse2
+```
+
+### Add Vaccinia Assembly
+```bash
+sudo jbrowse add-assembly vaccinia_genome_ncbi.fa --load copy -n vaccinia --out /var/www/html/jbrowse2
+```
+
+### Add B14R Gene Assembly
+```bash
+sudo jbrowse add-assembly B14R_gene.fna --load copy -n B14R --out /var/www/html/jbrowse2
+```
+
+---
 
 ### Add Tracks to JBrowse
 ```bash
@@ -176,7 +200,48 @@ jbrowse add-track variola_vs_vaccinia.paf --assemblyNames variola,vaccinia --loa
 ```
 
 ---
+## **Add Annotations**
 
+### Variola Annotation
+```bash
+curl -o variola.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/859/885/GCF_000859885.1_ViralProj15197/GCF_000859885.1_ViralProj15197_genomic.gff.gz"
+gunzip variola.gff.gz
+sudo jbrowse sort-gff variola.gff > variola_sorted.gff
+bgzip variola_sorted.gff
+tabix variola_sorted.gff.gz
+sudo jbrowse add-track variola_sorted.gff.gz --assemblyNames variola --out /var/www/html/jbrowse2 --load copy
+```
+
+### Monkeypox Annotation
+```bash
+curl -o monkeypox.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/023/516/015/GCA_023516015.3_ASM2351601v1/GCA_023516015.3_ASM2351601v1_genomic.gff.gz"
+gunzip monkeypox.gff.gz
+sudo jbrowse sort-gff monkeypox.gff > monkeypox_sorted.gff
+bgzip monkeypox_sorted.gff
+tabix monkeypox_sorted.gff.gz
+sudo jbrowse add-track monkeypox_sorted.gff.gz --assemblyNames monkeypox --out /var/www/html/jbrowse2 --load copy
+```
+
+### Cowpox Annotation
+```bash
+curl -o cowpox_genome.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/839/185/GCF_000839185.1_ViralProj14174/GCF_000839185.1_ViralProj14174_genomic.gff.gz"
+gunzip cowpox_genome.gff.gz
+sudo jbrowse sort-gff cowpox_genome.gff > cowpox_genome_sorted.gff
+bgzip cowpox_genome_sorted.gff
+tabix cowpox_genome_sorted.gff.gz
+sudo jbrowse add-track cowpox_genome_sorted.gff.gz --assemblyNames cowpox --out $APACHE_ROOT/jbrowse2 --load copy
+```
+
+### Vaccinia Annotation
+```bash
+curl -o vaccinia_genome.gff.gz "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/860/085/GCF_000860085.1_ViralProj15241/GCF_000860085.1_ViralProj15241_genomic.gff.gz"
+gunzip vaccinia_genome.gff.gz
+sudo jbrowse sort-gff vaccinia_genome.gff > vaccinia_genome_sorted.gff
+bgzip vaccinia_genome_sorted.gff
+tabix vaccinia_genome_sorted.gff.gz
+sudo jbrowse add-track vaccinia_genome_sorted.gff.gz --assemblyNames vaccinia --out $APACHE_ROOT/jbrowse2 --load copy
+```
+---
 ## **Final Steps**
 
 ### Index Everything
